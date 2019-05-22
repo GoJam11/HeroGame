@@ -40,7 +40,7 @@ cc.Class({
 
     },
     moved(event) {
-        console.log('s')
+
         console.log(event)
     }
     // update (dt) {},
