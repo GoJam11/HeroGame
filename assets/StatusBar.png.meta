@@ -6,7 +6,7 @@
   "filterMode": "bilinear",
   "premultiplyAlpha": false,
   "subMetas": {
-    "statusBar": {
+    "StatusBar": {
       "ver": "1.0.3",
       "uuid": "2ac21809-d0b7-4011-8db1-715c28fef9da",
       "rawTextureUuid": "67266d87-8e23-4958-b6ce-002a90cf4877",
