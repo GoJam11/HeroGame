@@ -12,17 +12,21 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        myHero: {
+        prefabEnemyHero: {
             default: null,
-            type: cc.Node
+            type: cc.Prefab
         },
-        hero: {
+        prefabUsHero: {
+            default: null,
+            type: cc.Prefab
+        },
+        //当前选中的英雄
+        selectedHero: {
             default: null,
             type: cc.Node
         },
         pool: [cc.Node],
-        distance: [],
-        timer: null
+        distance: []
 
         // foo: {
         //     // ATTRIBUTES:
@@ -46,28 +50,100 @@ cc.Class({
     // onLoad () {},
 
     start() {
-        this.myHero = cc.find("bg/MyHero", this.node)
-        this.hero = cc.find("bg/Hero", this.node)
-        this.pool.push(this.myHero)
-        this.pool.push(this.hero)
-
+        let hero = this.createRole('us', 'Hero', -202, -167)
+        this.selectedHero = hero
+        hero.selected = true
+        this.createRole('enemy', 'Hero', 155, -160)
     },
 
     update(dt) {
-        //attack
-        this.pool.forEach(el => {
-            this.pool.forEach(ele => {
+        let pool = cc.find('bg', this.node).children
+        pool.forEach(el => {
+            let _component = el.getComponent('Hero')
+                //没血不循环
+            if (_component.red == 0) return;
+            pool.forEach(ele => {
+                let _component1 = ele.getComponent('Hero')
+                    //console.log(el.getComponents("Hero"))
                 let _x = el.x - ele.x
                 let _y = el.y - ele.y
                 let _d = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2))
-                if (_d < 150 && el != ele) {
-                    console.log("attack")
-                        //如果计时器=0或>0.3允许动画并开始计时，如果在0-0.3之间不执行动画
-                    this.timer = new Date()
-                    cc.tween(el).to(0.3, { rotation: 30 }).start()
-                }
+                this.attack(el, ele, _component, _component1, _d)
 
             })
         });
+        this.updateStatusBar()
+
     },
+    //管理攻击(节点1，节点2，节点1组件，节点2组件，距离)
+    //节点1攻击节点2
+    attack(el, ele, _component, _component1, _d) {
+        //同阵营不攻击
+        if (_component.camp == _component1.camp) return;
+        //已死亡不攻击
+        if (_component.red == 0 || _component1.red == 0) return;
+        //正在播放动画不攻击
+        if (_component.play == true) return;
+        //节点1和节点2相同不攻击
+        if (el == ele) return;
+        //距离远不攻击
+        if (_d > 150) return;
+        //攻击流程
+        _component.play = true
+        cc.tween(el).to(0.3, {
+            rotation: 30
+        }).to(0.3, {
+            rotation: -30
+        }).to(0.3, {
+            rotation: 0
+        }).call(() => {
+            console.log("attack: " + _component.name + " attacked " + _component1.name)
+            _component.play = false
+
+            if (_component1.red >= _component.attack) {
+                //检查装备
+                _component1.red -= _component.attack
+                    //检查吸血
+                    //console.log(_component.attack)
+
+            } else {
+                _component1.red = 0
+                console.log("attack: " + hero.name + ' dead')
+            }
+
+
+        }).start()
+
+    },
+    //创建角色('us'or'enemy','Hero'or'Normal',x,y)
+    //返回节点和组件
+    createRole(camp, type, x, y) {
+        let node, Hero;
+        if (camp == 'enemy' && type == 'Hero') {
+            node = cc.instantiate(this.prefabEnemyHero)
+            Hero = node.addComponent(type)
+            Hero.camp = camp
+            Hero.attack = 500
+        } else if (camp == 'us' && type == 'Hero') {
+            node = cc.instantiate(this.prefabUsHero)
+            Hero = node.addComponent(type)
+            Hero.camp = camp
+        }
+        var scene = cc.find('bg', this.node)
+        node.parent = scene
+        node.setPosition(x, y)
+        this.pool.push(node)
+        return Hero
+    },
+    //状态栏管理 StatusBar
+    updateStatusBar() {
+        let hero = this.pool[0].getComponent('Hero')
+            //对选中单位的信息进行更新
+        let blood = cc.find('StatusBar/blood', this.node)
+        blood.width = hero.red / 1000 * 1920
+        if (hero.red == 0) {
+            hero.node.color = new cc.Color(215, 215, 213)
+            cc.director.loadScene("gameOver");
+        }
+    }
 });

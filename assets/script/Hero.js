@@ -12,10 +12,15 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        attack: 10,
+        attack: 100,
         red: 1000,
+        maxRed: 1000,
         blue: 1000,
-        play: false
+        maxBlue: 1000,
+        play: false, //播放攻击动画的状态
+        selected: false, //是否可操作
+        camp: 'us', //'us' or 'enemy'
+        type: 'Hero' //'Hero' or 'Normal'
             // foo: {
             //     // ATTRIBUTES:
             //     default: null,        // The default value will be used only when the component attaching
@@ -35,7 +40,18 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
     onKeyDown(event) {
-        let onlyMove = (x, y) => { cc.tween(this.node).to(0.3, { position: cc.v2(x, y) }).start() }
+        //如果是enemy单位不响应
+        if (this.camp == 'enemy') return;
+        //如果没血不响应
+        if (this.red == 0) return;
+        //没被选中不响应
+        if (this.selected == false) return;
+
+        let onlyMove = (x, y) => {
+            cc.tween(this.node).to(0.3, {
+                position: cc.v2(x, y)
+            }).start()
+        }
 
         switch (event.keyCode) {
             case cc.macro.KEY.w:
@@ -56,7 +72,21 @@ cc.Class({
         }
     },
     onKeyUp(event) {},
+    //如果没有选中，则选中（改变Main，原来选中的对象，还有自己的selected）
+    touched(event) {
+        if (this.selected == false) {
+            this.selected = true;
+
+            let canvas = cc.find("Canvas").getComponent("Main")
+            canvas.selectedHero.getComponent("Hero").selected = false
+            canvas.selectedHero = this.node
+            console.log("select:" + this.name)
+            return;
+        }
+
+    },
     onLoad() {
+        this.node.on(cc.Node.EventType.TOUCH_START, this.touched, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     },
