@@ -130,8 +130,8 @@ cc.Class({
 
     onLoad() {
         //计算横竖grid的数量和总量
-        this._numX = Math.ceil(cc.winSize.width / this.sizeX);
-        this._numY = Math.ceil(cc.winSize.height / this.sizeY);
+        this._numX = Math.ceil(cc.winSize.width*4 / this.sizeX);
+        this._numY = Math.ceil(cc.winSize.height*4 / this.sizeY);
         this._total = this._numX * this._numY;
         //生成map
         this._map = new Array(this._numX);
@@ -150,7 +150,7 @@ cc.Class({
         // for (let line = 0; line < 10; line++)
         //     this._map[5][line] = new Grid(null, 100);
         console.log(this.sizeX, this.sizeX, this._numX, this._numY);
-        let path=this.aStarfindPath(null, { x: 0, y: 0 }, { x: 0, y: 0 });
+        let path=this.aStarFindPath(null, { x: 0, y: 0 }, { x: 0, y: 0 });
         for(let setp of path){
             console.log(setp.x,setp.y);
         }
@@ -164,8 +164,14 @@ cc.Class({
             y: gridY
         }
     },
+    centerPixOf(location){
+        return {
+            x:Math.floor((location.x+0.5)*this.sizeX),
+            y:Math.floor((location.y+0.5)*this.sizeY)
+        };
+    },
     //从from寻路到to
-    aStarfindPath(target, from, to) {
+    aStarFindPath(target, from, to) {
         let openList = new Quene();//打开列表
         let closeList = new Aector();//关闭列表
         let path=new Array();//最终路径
@@ -191,14 +197,14 @@ cc.Class({
             curGrid = curGrid.previous;
             path.push(curGrid);
         }
-        return path.reverse();
+        return path;
     },
     //遍历这个格子可行的四周，寻找下一步,若有目标而且触碰到目标边缘（无需到达锚点），则返回true，其他情况返回false
     traverseSurround(openList, closeList, curGrid, to,target) {
-        let left = curGrid.x > 0 ? curGrid.x - 1 : curGrid.x;
-        let right = curGrid.x < this._numX - 1 ? curGrid.x + 1 : curGrid.x;
-        let down = curGrid.y > 0 ? curGrid.y - 1 : curGrid.y;
-        let up = curGrid.y < this._numY - 1 ? curGrid.y + 1 : curGrid.y;
+        let left = (curGrid.x > 0) ? (curGrid.x - 1) : curGrid.x;
+        let right = (curGrid.x < this._numX - 1) ? (curGrid.x + 1) : curGrid.x;
+        let down = (curGrid.y > 0) ? (curGrid.y - 1) : curGrid.y;
+        let up = (curGrid.y < this._numY - 1) ? (curGrid.y + 1) : curGrid.y;
         for (let _x = left; _x <= right; _x++) {
             for (let _y = down; _y <= up; _y++) {
                 //这个格子的占据点

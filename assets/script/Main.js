@@ -13,16 +13,11 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-
-        prefabEnemyHero: {
+        prefabHeroTom: {
             default: null,
             type: cc.Prefab
         },
-        prefabUsHero: {
-            default: null,
-            type: cc.Prefab
-        },
-        prefabUsHero2:{
+        prefabHeroJerry:{
             default:null,
             type: cc.Prefab
         },
@@ -33,10 +28,15 @@ cc.Class({
         //当前选中的英雄
         selectedHero: {
             default: null,
-            type: cc.Node
+            type: cc.Component
         },
         pool: [cc.Node],
-        distance: []
+        distance: [],
+        map: {
+            default:null,
+            type: cc.Component
+        },
+        scene: null
 
         // foo: {
         //     // ATTRIBUTES:
@@ -57,55 +57,58 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    // onLoad () {},
+    onLoad () {},
 
-    onLoad() {
-        let hero = this.createRole('us', 'Hero', 100, 320)
-        this.selectedHero = hero
-        hero.selected = true
-        this.createRole('enemy', 'Hero', 155, -160)
+    start() {
+        let map=cc.instantiate(this.prefabMap);
+        map.parent=this.node;
+        this.map=map.getComponent("Map");
 
-        let node,_hero;
-        node=cc.instantiate(this.prefabUsHero2);
-        _hero=node.addComponent('Jerry');
-        _hero.camp='us';
-        let scene=cc.find('bg',this.node);
-        node.parent=scene;
-        node.setPosition(0,0);
-        this.pool.push(node);
-        console.log("width:"+cc.winSize.width+",height:"+cc.winSize.height);
+        this.scene=cc.find('bg',this.node);
+        this.scene.parent=this.node;
 
-        node=cc.instantiate(this.prefabMap);
-        node.parent=this.node;
+        this.createRole("Jerry");
+        this.createRole("Tom");
+
+        let worldJerry=this.map.locationOf(this.pool[0].node);
+        let worldTom=this.map.locationOf(this.pool[1].node);
+
+        this.selectedHero=this.pool[0];
+        console.log("Jerry:",worldJerry.x,worldJerry.y);
+        console.log("Tom:",worldTom.x,worldTom.y);
     },
 
     update(dt) {
         this.updateAttack();
-        this.updateStatusBar()
+        this.updateStatusBar();
     },
     //创建角色('us'or'enemy','Hero'or'Normal',x,y)
     //返回节点和组件
-    createRole(camp, type, x, y) {
-        let node, Hero;
-        if (camp == 'enemy' && type == 'Hero') {
-            node = cc.instantiate(this.prefabEnemyHero)
-            Hero = node.addComponent(type)
-            Hero.camp = camp
-            Hero.attack = 500
-        } else if (camp == 'us' && type == 'Hero') {
-            node = cc.instantiate(this.prefabUsHero)
-            Hero = node.addComponent(type)
-            Hero.camp = camp
+    createRole(name,x, y,camp) {
+        let node, hero;
+        switch(name){
+            case 'Jerry':node=cc.instantiate(this.prefabHeroJerry);
+                break;
+            case 'Tom':node=cc.instantiate(this.prefabHeroTom);
+                break;
+            default:
+                return;
         }
-        var scene = cc.find('bg', this.node)
-        node.parent = scene
-        node.setPosition(x, y)
-        this.pool.push(node)
-        return Hero
+        hero=node.getComponent(name);
+        if(camp!=undefined)
+            hero.camp=camp;
+        if(x!=undefined&&y!=undefined){
+            node.x=x;
+            node.y=y;
+        }
+        hero.main=this;
+        hero.map=this.map;
+        node.parent = this.scene;
+        this.pool.push(hero);
     },
     //状态栏管理 StatusBar
     updateStatusBar() {
-        let hero = this.pool[0].getComponent('Hero')
+        let hero = this.pool[1];
             //对选中单位的信息进行更新
         let blood = cc.find('StatusBar/blood', this.node)
         blood.width = hero.red / 1000 * 1920
@@ -115,16 +118,15 @@ cc.Class({
         }
     },
     //全局的攻击管理
-    updateAttack(){
-        let pool = cc.find('bg', this.node).children
-        pool.forEach(attackerNode => {
-            let attacker = attackerNode.getComponent('Hero')
-            pool.forEach(attackedNode => {
-                let attacked = attackedNode.getComponent('Hero')
-                //应当攻击时发起攻击
+    updateAttack(){   
+        let pool = this.pool;
+        pool.forEach(attacker=>{
+            pool.forEach( attacked=>{
                 if(attacker.shouldAttack(attacked))
-                    attacker.attack(attacked);
-            })
-        });
+                    attacker.doAttack(attacked);
+                else
+                    attacker.getIdle();
+            })    
+        })
     }
 });

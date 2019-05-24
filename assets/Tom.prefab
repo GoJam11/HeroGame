@@ -49,14 +49,14 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": 61,
+      "y": 59,
       "z": 0
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0.2,
+      "y": 0.2,
       "z": 1
     },
     "_rotationX": 0,
@@ -114,16 +114,23 @@
     "maxRed": 1000,
     "blue": 1000,
     "maxBlue": 1000,
-    "moveSpeed": 10,
+    "moveSpeed": 0.1,
     "radius": 10,
     "attackRadius": 20,
     "play": false,
     "selected": false,
-    "camp": "us",
+    "camp": "enemy",
     "sin": 1,
     "cos": 0,
     "isMoving": false,
     "selectionId": null,
+    "shouldChase": false,
+    "path": null,
+    "curDestination": null,
+    "curTarget": null,
+    "nextGrid": null,
+    "main": null,
+    "map": null,
     "_id": ""
   },
   {
@@ -132,7 +139,7 @@
       "__id__": 1
     },
     "asset": {
-      "__id__": 0
+      "__uuid__": "4a6f48b8-720e-4ff5-afe9-31e946e9f6fd"
     },
     "fileId": "e3iMfUg1BJJosI4KIboau4",
     "sync": false
