@@ -18,11 +18,12 @@ cc.Class({
         y: 0,
         role: {
             default: null,
-            type: cc.Node
+            type: cc.Component
         },
         center: {
             default: {}
-        }
+        },
+        main: null
         //x,y遇到move才更新
         // foo: {
         //     // ATTRIBUTES:
@@ -49,7 +50,7 @@ cc.Class({
             y: 168
         }
         this.node.on(cc.Node.EventType.TOUCH_START, this.touchstart, this)
-        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.moved, this)
+        this.node.on(cc.Node.EventType.TOUCH_MOVE, this.touchmove, this)
         this.node.on(cc.Node.EventType.TOUCH_END, this.touchend, this)
         this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.touchcancel, this)
 
@@ -59,35 +60,52 @@ cc.Class({
         //162,168
         //this.role=
         this.press = true
-
-    },
-    moved(event) {
-        //console.log(event.getLocation())
+        this.main = cc.find("Canvas").getComponent("Main");
+        console.log(this.main);
     },
     touchstart(e) {
-        this.role.isMoving = true
-
-        let ag = this.getAngle(e.getLocation());
-        this.role.sin = ag.sin
-        this.role.cos = ag.cos
-
+        let hero = this.main.selectedHero
+        if (hero != null && hero.camp == 'us') {
+            hero.isMoving = true
+            let ag = this.getAngle(e.getLocation());
+            hero.sin = ag.sin
+            hero.cos = ag.cos
+        }
+    },
+    touchmove(e) {
+        let hero = this.main.selectedHero
+        if (hero != null && hero.camp == 'us') {
+            hero.isMoving = true
+            let ag = this.getAngle(e.getLocation());
+            hero.sin = ag.sin
+            hero.cos = ag.cos
+        }
     },
     touchend(e) {
-        this.press = false
-        this.role.isMoving = false
-        console.log('end')
+        let hero = this.main.selectedHero
+        if (hero != null && hero.camp == 'us') {
+            hero.isMoving = false
+            console.log('end')
+        }
     },
     touchcancel(e) {
-        this.press = false
-        this.role.isMoving = false
-        console.log('can')
+        let hero = this.main.selectedHero
+        if (hero != null && hero.camp == 'us') {
+            hero.isMoving = false
+            console.log('cancel')
+        }
     },
     getAngle(loc) {
         let distance = Math.sqrt(Math.pow(loc.x - this.center.x, 2) + Math.pow(loc.y - this.center.y, 2))
         let sin = (loc.y - this.center.y) / distance;
-        let cos = (loc.x - this.center.x) / distance
+        let cos = (loc.x - this.center.x) / distance;
 
         return { sin, cos }
+    },
+    onDestroy(){
+        this.node.off(cc.Node.EventType.TOUCH_START, this.touchstart, this)
+        this.node.off(cc.Node.EventType.TOUCH_MOVE, this.touchmove, this)
+        this.node.off(cc.Node.EventType.TOUCH_END, this.touchend, this)
+        this.node.off(cc.Node.EventType.TOUCH_CANCEL, this.touchcancel, this)
     }
-    // update (dt) {},
 });

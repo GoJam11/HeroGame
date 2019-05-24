@@ -44,8 +44,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-      "x": 0.337995944314327,
-      "y": 0.337995944314327,
+      "x": 0.39757814407348635,
+      "y": 0.39757814407348635,
       "z": 1
     },
     "_quat": {
@@ -507,15 +507,20 @@
       "__id__": 2
     },
     "_enabled": true,
-    "prefabEnemyHero": {
-      "__uuid__": "79143346-8245-4d56-864b-21e7265caf2a"
+    "prefabHeroTom": {
+      "__uuid__": "4a6f48b8-720e-4ff5-afe9-31e946e9f6fd"
     },
-    "prefabUsHero": {
-      "__uuid__": "c9db9c05-fbdd-4084-bcb4-23e698d89edc"
+    "prefabHeroJerry": {
+      "__uuid__": "a961c0b9-93af-4aea-9523-105aca57a0ad"
+    },
+    "prefabMap": {
+      "__uuid__": "d0e47845-6ec2-47e4-b1b5-b06369ace795"
     },
     "selectedHero": null,
     "pool": [],
     "distance": [],
+    "map": null,
+    "scene": null,
     "_id": "96caUtm9VL55BlTmaWrHRB"
   },
   {
@@ -622,6 +627,7 @@
     "y": 0,
     "role": null,
     "center": {},
+    "main": null,
     "_id": "3bXbeMfnVC463GimfSge3h"
   }
 ]
