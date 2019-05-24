@@ -11,21 +11,21 @@
 cc.Class({
     extends: cc.Component,
     properties: {
-        attack: 100,//攻击力
-        red: 1000,//血量
-        maxRed: 1000,//血量上限
-        blue: 1000,//蓝量
-        maxBlue: 1000,//蓝量上限
-        moveSpeed: 10,//移动速度
-        radius: 10,//自身半径
-        attackRadius: 20,//攻击半径
+        attack: 100, //攻击力
+        red: 1000, //血量
+        maxRed: 1000, //血量上限
+        blue: 1000, //蓝量
+        maxBlue: 1000, //蓝量上限
+        moveSpeed: 10, //移动速度
+        radius: 10, //自身半径
+        attackRadius: 20, //攻击半径
         play: false, //播放攻击动画的状态
         selected: false, //当前是否被选中
         camp: 'us', //'us' or 'enemy'
-        sin: 1,//当前移动方向的sin
-        cos: 0,//当前移动方向的cos
-        isMoving: false,//当前是否正在移动，否时每一帧的update不更新位置
-        selectionId: null//选中这个英雄的时候，那个触点的id
+        sin: 1, //当前移动方向的sin
+        cos: 0, //当前移动方向的cos
+        isMoving: false, //当前是否正在移动，否时每一帧的update不更新位置
+        selectionId: null //选中这个英雄的时候，那个触点的id
     },
 
     //如果没有选中，则选中（改变Main，原来选中的对象，还有自己的selected）
@@ -90,11 +90,27 @@ cc.Class({
         return;
     },
     update(dt) {
+
         //操控状态下每帧根据角度及移动速度刷新位置
         if (this.isMoving) {
+            if (this.node.x < 0 && this.cos < 0) {
+                return;
+            }
+            if (this.node.x > 957 && this.cos > 0) {
+                console.log('right')
+                return;
+            }
+            if (this.node.y < 0 && this.sin < 0) {
+                return;
+            }
+            if (this.node.y > 471 && this.sin > 0) {
+                return;
+            }
             this.node.x += this.moveSpeed * this.cos;
             this.node.y += this.moveSpeed * this.sin;
-        }else if(true){
+
+
+        } else if (true) {
 
         }
     },
@@ -104,4 +120,3 @@ cc.Class({
         this.node.off(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     }
 });
-
