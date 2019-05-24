@@ -22,6 +22,14 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+        prefabUsHero2:{
+            default:null,
+            type: cc.Prefab
+        },
+        prefabMap:{
+            default:null,
+            type: cc.Prefab
+        },
         //当前选中的英雄
         selectedHero: {
             default: null,
@@ -55,70 +63,25 @@ cc.Class({
         let hero = this.createRole('us', 'Hero', 100, 320)
         this.selectedHero = hero
         hero.selected = true
-        this.createRole('enemy', 'Hero', 455, 320)
-        cc.find('circle').getComponent('Circle').role = hero
+        this.createRole('enemy', 'Hero', 155, -160)
 
+        let node,_hero;
+        node=cc.instantiate(this.prefabUsHero2);
+        _hero=node.addComponent('Jerry');
+        _hero.camp='us';
+        let scene=cc.find('bg',this.node);
+        node.parent=scene;
+        node.setPosition(0,0);
+        this.pool.push(node);
+        console.log("width:"+cc.winSize.width+",height:"+cc.winSize.height);
+
+        node=cc.instantiate(this.prefabMap);
+        node.parent=this.node;
     },
 
     update(dt) {
-        let pool = cc.find('bg', this.node).children
-        pool.forEach(el => {
-            let _component = el.getComponent('Hero')
-                //没血不循环
-            if (_component.red == 0) return;
-            pool.forEach(ele => {
-                let _component1 = ele.getComponent('Hero')
-                    //console.log(el.getComponents("Hero"))
-                let _x = el.x - ele.x
-                let _y = el.y - ele.y
-                let _d = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2))
-                    //距离远不攻击
-                if (_d > 150) return;
-                this.attack(el, ele, _component, _component1, _d)
-
-            })
-        });
+        this.updateAttack();
         this.updateStatusBar()
-
-    },
-    //管理攻击(节点1，节点2，节点1组件，节点2组件，距离)
-    //节点1攻击节点2
-    attack(el, ele, _component, _component1, _d) {
-        //同阵营不攻击
-        if (_component.camp == _component1.camp) return;
-        //已死亡不攻击
-        if (_component.red == 0 || _component1.red == 0) return;
-        //正在播放动画不攻击
-        if (_component.play == true) return;
-        //节点1和节点2相同不攻击
-        if (el == ele) return;
-
-        //攻击流程
-        _component.play = true
-        cc.tween(el).to(0.3, {
-            rotation: 30
-        }).to(0.3, {
-            rotation: -30
-        }).to(0.3, {
-            rotation: 0
-        }).call(() => {
-            console.log("attack: " + _component.name + " attacked " + _component1.name)
-            _component.play = false
-
-            if (_component1.red >= _component.attack) {
-                //检查装备
-                _component1.red -= _component.attack
-                    //检查吸血
-                    //console.log(_component.attack)
-
-            } else {
-                _component1.red = 0
-                console.log("attack: " + hero.name + ' dead')
-            }
-
-
-        }).start()
-
     },
     //创建角色('us'or'enemy','Hero'or'Normal',x,y)
     //返回节点和组件
@@ -150,5 +113,18 @@ cc.Class({
             hero.node.color = new cc.Color(215, 215, 213)
             cc.director.loadScene("gameOver");
         }
+    },
+    //全局的攻击管理
+    updateAttack(){
+        let pool = cc.find('bg', this.node).children
+        pool.forEach(attackerNode => {
+            let attacker = attackerNode.getComponent('Hero')
+            pool.forEach(attackedNode => {
+                let attacked = attackedNode.getComponent('Hero')
+                //应当攻击时发起攻击
+                if(attacker.shouldAttack(attacked))
+                    attacker.attack(attacked);
+            })
+        });
     }
 });

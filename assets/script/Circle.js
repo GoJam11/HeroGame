@@ -18,7 +18,7 @@ cc.Class({
         y: 0,
         role: {
             default: null,
-            type: cc.Node
+            type: cc.Component
         },
         center: {
             default: {}

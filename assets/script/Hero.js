@@ -108,11 +108,48 @@ cc.Class({
             }
             this.node.x += this.moveSpeed * this.cos;
             this.node.y += this.moveSpeed * this.sin;
-
-
         } else if (true) {
 
         }
+    },
+    //集中判断是否应当攻击一次
+    shouldAttack(target) {
+        let _x = this.node.x - target.node.x
+        let _y = this.node.y - target.node.y
+        let _d = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2))
+        if (_d >= this.attackRadius + target.radius ||//距离不够不攻击
+            this.camp == target.camp ||//同阵营不攻击
+            this.red == 0 || target.red == 0 ||//已死亡不攻击
+            this.node == target.node ||//节点相同不攻击
+            _d > 150 ||//距离远不攻击
+            this.play == true)//正在播放动画不攻击
+            return false;
+        return true;
+    },
+    doAttack(target){
+        cc.tween(this.node).to(0.3, {
+            rotation: 30
+        }).to(0.3, {
+            rotation: -30
+        }).to(0.3, {
+            rotation: 0
+        }).call(() => {
+            console.log("attack: " + this.name + " attacked " + target.name)
+            this.play = false
+
+            if (target.red >= this.attack) {
+                //检查装备
+                target.red -= this.attack
+                    //检查吸血
+                    //console.log(_component.attack)
+
+            } else {
+                target.red = 0
+                console.log("attack: " + target.name + ' dead')
+            }
+
+
+        }).start()
     },
     onDestroy() {
         this.node.off(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
