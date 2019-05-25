@@ -34,11 +34,14 @@ cc.Class({
     // onLoad () {},
 
     start() {
+        this.node.zIndex = 1
         this.node.on(cc.Node.EventType.TOUCH_END, this.touchend, this)
     },
     touchend() {
         cc.find("Main Camera").active = true
         cc.director.loadScene("main")
+
+
     }
     // update (dt) {},
 });

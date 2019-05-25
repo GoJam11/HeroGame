@@ -11,6 +11,12 @@
 cc.Class({
     extends: cc.Component,
     properties: {
+        heroName: {
+            default: null
+        },
+        bought: {
+            default: false
+        },
         attack: 100, //攻击力
         red: 1000, //血量
         maxRed: 1000, //血量上限
@@ -39,6 +45,7 @@ cc.Class({
 
     //如果没有选中，则选中（改变Main，原来选中的对象，还有自己的selected）
     onTouchStart(event) {
+
         //播放被摸的动画和特效
         this.displayTouchedAnimation();
         this.displayTouchedSound();
@@ -62,13 +69,16 @@ cc.Class({
         console.log("touch cancel");
     },
     onLoad() {
-
-    },
-    start() {
+        console.log(this.name)
         this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.on(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.on(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
     },
+    //start方法会被子类覆盖
+    /* start() {
+
+         
+     },*/
     //播放被摸的动画特效
     displayTouchedAnimation() {
         //TODO

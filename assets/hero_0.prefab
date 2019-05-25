@@ -17,7 +17,7 @@
     "_parent": null,
     "_children": [],
     "_active": true,
-    "_level": 1,
+    "_level": 2,
     "_components": [
       {
         "__id__": 2
@@ -49,8 +49,8 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 146,
-      "y": 461,
+      "x": 60,
+      "y": 70,
       "z": 0
     },
     "_scale": {
@@ -109,6 +109,8 @@
       "__id__": 1
     },
     "_enabled": true,
+    "heroName": "Hero0",
+    "bought": false,
     "attack": 100,
     "red": 1000,
     "maxRed": 1000,
@@ -140,7 +142,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "43cwWPUMxJLaBv1utID4lY",
+    "fileId": "c8cyLQawNMpop5DYUFnjKd",
     "sync": false
   }
 ]

@@ -13,12 +13,11 @@ cc.Class({
 
     properties: {
         bought: {
-            default: true,
+            default: false,
             override: true
         },
-        heroName: { default: 'Tom', override: true }
+        heroName: { default: 'Hero1', override: true }
     },
-
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},

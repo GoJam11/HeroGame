@@ -68,7 +68,11 @@ cc.Class({
     onLoad() {
         //切换到商店时不销毁节点
         cc.game.addPersistRootNode(this.node);
-
+        this.node.on('createRole', (msg) => {
+            console.log('before create')
+            this.createRole(msg)
+            console.log('have created')
+        });
     },
 
     start() {
@@ -97,6 +101,7 @@ cc.Class({
     //创建角色('us'or'enemy','Hero'or'Normal',x,y)
     //返回节点和组件
     createRole(name, x, y, camp) {
+        console.log('beforeCreateRole')
         let node, hero;
         switch (name) {
             case 'Jerry':
@@ -115,6 +120,7 @@ cc.Class({
                 return;
         }
         hero = node.getComponent(name);
+        console.log(hero)
         if (camp != undefined)
             hero.camp = camp;
         if (x != undefined && y != undefined) {

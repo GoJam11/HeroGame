@@ -11,7 +11,13 @@
 cc.Class({
     extends: require("./Hero"),
 
-    properties: {},
+    properties: {
+        bought: {
+            default: false,
+            override: true
+        },
+        heroName: { default: "Hero0", override: true }
+    },
     // LIFE-CYCLE CALLBACKS:
 
     // onLoad () {},

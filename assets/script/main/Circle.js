@@ -85,14 +85,14 @@ cc.Class({
         let hero = this.main.selectedHero
         if (hero != null && hero.camp == 'us') {
             hero.isMoving = false
-            console.log('end')
+                //console.log('end')
         }
     },
     touchcancel(e) {
         let hero = this.main.selectedHero
         if (hero != null && hero.camp == 'us') {
             hero.isMoving = false
-            console.log('cancel')
+                //console.log('cancel')
         }
     },
     getAngle(loc) {

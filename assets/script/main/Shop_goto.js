@@ -38,6 +38,7 @@ cc.Class({
     },
     touchend() {
         cc.find("Main Camera").active = false
+            //cc.find("Main Camera").opacity = 0
         cc.director.loadScene("shop")
     }
     // update (dt) {},
