@@ -11,13 +11,12 @@
 cc.Class({
     extends: cc.Component,
     properties: {
-<<<<<<< HEAD
         attack: 100, //攻击力
         red: 1000, //血量
         maxRed: 1000, //血量上限
         blue: 1000, //蓝量
         maxBlue: 1000, //蓝量上限
-        moveSpeed: 10, //移动速度
+        moveSpeed: 0.0005, //移动速度
         radius: 10, //自身半径
         attackRadius: 20, //攻击半径
         play: false, //播放攻击动画的状态
@@ -26,33 +25,16 @@ cc.Class({
         sin: 1, //当前移动方向的sin
         cos: 0, //当前移动方向的cos
         isMoving: false, //当前是否正在移动，否时每一帧的update不更新位置
-        selectionId: null //选中这个英雄的时候，那个触点的id
-=======
-        attack: 100,//攻击力
-        red: 1000,//血量
-        maxRed: 1000,//血量上限
-        blue: 1000,//蓝量
-        maxBlue: 1000,//蓝量上限
-        moveSpeed: 0.0005,//移动速度
-        radius: 10,//自身半径
-        attackRadius: 20,//攻击半径
-        play: false, //播放攻击动画的状态
-        selected: false, //当前是否被选中
-        camp: 'us', //'us' or 'enemy'
-        sin: 1,//当前移动方向的sin
-        cos: 0,//当前移动方向的cos
-        isMoving: false,//当前是否正在移动，否时每一帧的update不更新位置
         shouldChase: false,
         path: null,
-        curDestination: null,//当前的目标格子
-        curTarget: {//当前的目标节点
+        curDestination: null, //当前的目标格子
+        curTarget: { //当前的目标节点
             default: null,
             type: cc.Node
         },
         nextGrid: null,
         main: null,
         map: null
->>>>>>> 418601495ac76c91cf21166220cfeafc430e1d7c
     },
 
     //如果没有选中，则选中（改变Main，原来选中的对象，还有自己的selected）
@@ -107,11 +89,7 @@ cc.Class({
     update(dt) {
 
         //操控状态下每帧根据角度及移动速度刷新位置
-<<<<<<< HEAD
-        if (this.isMoving) {
-=======
         if (this.camp == 'us' && this.isMoving) {
->>>>>>> 418601495ac76c91cf21166220cfeafc430e1d7c
             if (this.node.x < 0 && this.cos < 0) {
                 return;
             }
@@ -127,11 +105,6 @@ cc.Class({
             }
             this.node.x += this.moveSpeed * this.cos;
             this.node.y += this.moveSpeed * this.sin;
-<<<<<<< HEAD
-
-
-        } else if (true) {
-=======
         } else if (true) {
 
         }
@@ -140,7 +113,7 @@ cc.Class({
             let target = this.judgeWhoToChase();
             if (target != null) {
                 this.setTarget(target);
-                this.chase();//追踪
+                this.chase(); //追踪
             }
         }
     },
@@ -177,11 +150,10 @@ cc.Class({
     getIdle() {
         this.shouldChase = true;
     },
->>>>>>> 418601495ac76c91cf21166220cfeafc430e1d7c
 
     setTarget(newTarget) {
         let targetLocation = this.map.locationOf(newTarget.node);
-        if (this.curTarget != newTarget || this.curDestination==null||targetLocation.x != this.curDestination.x ||targetLocation.y != this.curDestination.y) {
+        if (this.curTarget != newTarget || this.curDestination == null || targetLocation.x != this.curDestination.x || targetLocation.y != this.curDestination.y) {
             this.curTarget = newTarget;
             this.curDestination = targetLocation;
             this.refindPath();
@@ -195,17 +167,17 @@ cc.Class({
         let _x = this.node.x - target.node.x
         let _y = this.node.y - target.node.y
         let _d = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2))
-        if (_d >= this.attackRadius + target.radius ||//距离不够不攻击
-            this.camp == target.camp ||//同阵营不攻击
-            this.red == 0 || target.red == 0 ||//已死亡不攻击
-            this.node == target.node ||//节点相同不攻击
-            _d > 150 ||//距离远不攻击
-            this.play == true)//正在播放动画不攻击
+        if (_d >= this.attackRadius + target.radius || //距离不够不攻击
+            this.camp == target.camp || //同阵营不攻击
+            this.red == 0 || target.red == 0 || //已死亡不攻击
+            this.node == target.node || //节点相同不攻击
+            _d > 150 || //距离远不攻击
+            this.play == true) //正在播放动画不攻击
             return false;
         return true;
     },
     doAttack(target) {
-        this.play=true;
+        this.play = true;
         this.shouldChase = false;
         this.path = null;
         cc.tween(this.node).to(0.3, {
@@ -236,11 +208,5 @@ cc.Class({
         this.node.off(cc.Node.EventType.TOUCH_START, this.onTouchStart, this);
         this.node.off(cc.Node.EventType.TOUCH_END, this.onTouchEnd, this);
         this.node.off(cc.Node.EventType.TOUCH_CANCEL, this.onTouchCancel, this);
-<<<<<<< HEAD
-    }
-});
-=======
     },
 });
-
->>>>>>> 418601495ac76c91cf21166220cfeafc430e1d7c

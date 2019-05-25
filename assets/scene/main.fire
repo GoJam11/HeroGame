@@ -47,13 +47,8 @@
     },
     "_scale": {
       "__type__": "cc.Vec3",
-<<<<<<< HEAD:assets/main.fire
-      "x": 0.3861083984375,
-      "y": 0.3861083984375,
-=======
       "x": 0.39757814407348635,
       "y": 0.39757814407348635,
->>>>>>> 418601495ac76c91cf21166220cfeafc430e1d7c:assets/scene/main.fire
       "z": 1
     },
     "_quat": {
@@ -635,10 +630,7 @@
     "y": 0,
     "role": null,
     "center": {},
-<<<<<<< HEAD:assets/main.fire
-=======
     "main": null,
->>>>>>> 418601495ac76c91cf21166220cfeafc430e1d7c:assets/scene/main.fire
     "_id": "3bXbeMfnVC463GimfSge3h"
   },
   {
