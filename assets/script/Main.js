@@ -8,10 +8,12 @@
 //  - [Chinese] https://docs.cocos.com/creator/manual/zh/scripting/life-cycle-callbacks.html
 //  - [English] https://www.cocos2d-x.org/docs/creator/manual/en/scripting/life-cycle-callbacks.html
 
+
 cc.Class({
     extends: cc.Component,
 
     properties: {
+
         prefabEnemyHero: {
             default: null,
             type: cc.Prefab
@@ -49,11 +51,13 @@ cc.Class({
 
     // onLoad () {},
 
-    start() {
-        let hero = this.createRole('us', 'Hero', -202, -167)
+    onLoad() {
+        let hero = this.createRole('us', 'Hero', 100, 320)
         this.selectedHero = hero
         hero.selected = true
-        this.createRole('enemy', 'Hero', 155, -160)
+        this.createRole('enemy', 'Hero', 455, 320)
+        cc.find('circle').getComponent('Circle').role = hero
+
     },
 
     update(dt) {
@@ -68,6 +72,8 @@ cc.Class({
                 let _x = el.x - ele.x
                 let _y = el.y - ele.y
                 let _d = Math.sqrt(Math.pow(_x, 2) + Math.pow(_y, 2))
+                    //距离远不攻击
+                if (_d > 150) return;
                 this.attack(el, ele, _component, _component1, _d)
 
             })
@@ -86,8 +92,7 @@ cc.Class({
         if (_component.play == true) return;
         //节点1和节点2相同不攻击
         if (el == ele) return;
-        //距离远不攻击
-        if (_d > 150) return;
+
         //攻击流程
         _component.play = true
         cc.tween(el).to(0.3, {
