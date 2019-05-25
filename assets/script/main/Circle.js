@@ -60,7 +60,7 @@ cc.Class({
         //162,168
         //this.role=
         this.press = true
-        this.main = cc.find("Canvas").getComponent("Main");
+        this.main = this.node.parent.getComponent("Main");
         console.log(this.main);
     },
     touchstart(e) {

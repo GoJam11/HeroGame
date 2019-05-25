@@ -21,6 +21,14 @@ cc.Class({
             default: null,
             type: cc.Prefab
         },
+        prefabHero0: {
+            default: null,
+            type: cc.Prefab
+        },
+        prefabHero1: {
+            default: null,
+            type: cc.Prefab
+        },
         prefabMap: {
             default: null,
             type: cc.Prefab
@@ -57,7 +65,11 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    onLoad() {},
+    onLoad() {
+        //切换到商店时不销毁节点
+        cc.game.addPersistRootNode(this.node);
+
+    },
 
     start() {
         let map = cc.instantiate(this.prefabMap);
@@ -93,6 +105,12 @@ cc.Class({
             case 'Tom':
                 node = cc.instantiate(this.prefabHeroTom);
                 break;
+            case 'Hero0':
+                node = cc.instantiate(this.prefabHero0);
+                break;
+            case 'Hero1':
+                node = cc.instantiate(this.prefabHero1);
+                break;
             default:
                 return;
         }
@@ -116,7 +134,11 @@ cc.Class({
         blood.width = hero.red / 1000 * 1920
         if (hero.red == 0) {
             hero.node.color = new cc.Color(215, 215, 213)
-            cc.director.loadScene("gameOver");
+                //canvas节点切换为可销毁状态
+
+            console.log(cc.game.isPersistRootNode(this.node))
+            cc.game.removePersistRootNode(this.node)
+            cc.director.loadScene("gameOver")
         }
     },
     //全局的攻击管理
@@ -130,5 +152,8 @@ cc.Class({
                     attacker.getIdle();
             })
         })
+    },
+    onDestroy() {
+        console.log('destroied')
     }
 });

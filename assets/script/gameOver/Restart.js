@@ -34,6 +34,8 @@ cc.Class({
     // onLoad () {},
 
     start() {
+
+
         this.node.on(cc.Node.EventType.TOUCH_START, function(event) {
             cc.director.loadScene("main");
         }, this);

@@ -37,6 +37,7 @@ cc.Class({
         this.node.on(cc.Node.EventType.TOUCH_END, this.touchend, this)
     },
     touchend() {
+        cc.find("Main Camera").active = false
         cc.director.loadScene("shop")
     }
     // update (dt) {},
