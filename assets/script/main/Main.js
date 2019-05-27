@@ -65,7 +65,8 @@ cc.Class({
 
     // LIFE-CYCLE CALLBACKS:
 
-    onLoad() {
+    onLoad () {
+        this.node.on(cc.Node.EventType.TOUCH_START, this.touchstart, this);
         //切换到商店时不销毁节点
         cc.game.addPersistRootNode(this.node);
         this.node.on('createRole', (msg) => {
@@ -76,9 +77,9 @@ cc.Class({
     },
 
     start() {
-        let map = cc.instantiate(this.prefabMap);
-        map.parent = this.node;
-        this.map = map.getComponent("Map");
+        let mapNode=cc.instantiate(this.prefabMap);
+        mapNode.parent=this.node;
+        this.map=mapNode.getComponent("Map");
 
         this.scene = cc.find('bg', this.node);
         this.scene.parent = this.node;
@@ -161,5 +162,13 @@ cc.Class({
     },
     onDestroy() {
         console.log('destroied')
+    },
+    touchstart(event){
+        let eventLoc=event.getLocation();
+        console.log("event location:",eventLoc.x,eventLoc.y);
+        console.log(event.touch);
+        let eventInMainLoc=this.node.convertToNodeSpace(event.touch);
+        console.log("event location in main:",eventInMainLoc.x,eventInMainLoc.y);
+        this.map.addTerrainAt('Brick',this.map.prefabBrick,event);   
     }
 });

@@ -30,17 +30,17 @@ function AStar(previous, here, destination, map) {
 
 }
 //关闭列表，是一个包装后的数组
-function Aector(){
-    this.array=new Array();
+function Aector() {
+    this.array = new Array();
 }
-Aector.prototype.find=function(location){
+Aector.prototype.find = function (location) {
     for (let element of this.array) {
         if (element.x == location.x && element.y == location.y)
             return true;
     }
     return false;
 }
-Aector.prototype.add=function(aStar){
+Aector.prototype.add = function (aStar) {
     this.array.push(aStar);
 }
 //打开列表，是一个优先队列
@@ -53,7 +53,7 @@ Quene.prototype.insert = function (aStar) {
 }
 Quene.prototype.removeFirst = function () {
     if (this.heap.length > 0) {
-        if(this.heap.length ==1)
+        if (this.heap.length == 1)
             return this.heap.pop();
         let minAStar = this.heap[0];
         this.heap[0] = this.heap.pop();
@@ -126,12 +126,18 @@ cc.Class({
             default: 1,
             type: cc.Integer
         },
+        prefabBrick: {
+            default: null,
+            type: cc.Prefab
+        },
+        terrains: [cc.Node],
+        main: null
     },
 
     onLoad() {
         //计算横竖grid的数量和总量
-        this._numX = Math.ceil(cc.winSize.width*4 / this.sizeX);
-        this._numY = Math.ceil(cc.winSize.height*4 / this.sizeY);
+        this._numX = Math.ceil(cc.winSize.width * 4 / this.sizeX);
+        this._numY = Math.ceil(cc.winSize.height * 4 / this.sizeY);
         this._total = this._numX * this._numY;
         //生成map
         this._map = new Array(this._numX);
@@ -150,10 +156,11 @@ cc.Class({
         // for (let line = 0; line < 10; line++)
         //     this._map[5][line] = new Grid(null, 100);
         console.log(this.sizeX, this.sizeX, this._numX, this._numY);
-        let path=this.aStarFindPath(null, { x: 0, y: 0 }, { x: 0, y: 0 });
-        for(let setp of path){
-            console.log(setp.x,setp.y);
+        let path = this.aStarFindPath(null, { x: 0, y: 0 }, { x: 0, y: 0 });
+        for (let setp of path) {
+            console.log(setp.x, setp.y);
         }
+        this.node.on(cc.Node.EventType.TOUCH_START, this.onTouchStart, this)
     },
     locationOf(node) {
         let wordLocation = node.convertToWorldSpaceAR(node);
@@ -164,17 +171,17 @@ cc.Class({
             y: gridY
         }
     },
-    centerPixOf(location){
+    centerPixOf(location) {
         return {
-            x:Math.floor((location.x+0.5)*this.sizeX),
-            y:Math.floor((location.y+0.5)*this.sizeY)
+            x: Math.floor((location.x + 0.5) * this.sizeX),
+            y: Math.floor((location.y + 0.5) * this.sizeY)
         };
     },
     //从from寻路到to
     aStarFindPath(target, from, to) {
         let openList = new Quene();//打开列表
         let closeList = new Aector();//关闭列表
-        let path=new Array();//最终路径
+        let path = new Array();//最终路径
         let curGrid;//当前格子
         //插入起点
         openList.insert(new AStar(null, from, to, this._map));
@@ -184,7 +191,7 @@ cc.Class({
             //加入closeList
             closeList.add(curGrid);
             //对四周可行的格子依次遍历，看是否已经建筑物边缘
-            let touchButNotReach = this.traverseSurround(openList, closeList, curGrid,to, target);
+            let touchButNotReach = this.traverseSurround(openList, closeList, curGrid, to, target);
             //决定下一步该干什么
             if (openList.isEmpty() ||//无路可走时寻路结束
                 touchButNotReach ||//抵达建筑物边缘时寻路结束
@@ -200,7 +207,7 @@ cc.Class({
         return path;
     },
     //遍历这个格子可行的四周，寻找下一步,若有目标而且触碰到目标边缘（无需到达锚点），则返回true，其他情况返回false
-    traverseSurround(openList, closeList, curGrid, to,target) {
+    traverseSurround(openList, closeList, curGrid, to, target) {
         let left = (curGrid.x > 0) ? (curGrid.x - 1) : curGrid.x;
         let right = (curGrid.x < this._numX - 1) ? (curGrid.x + 1) : curGrid.x;
         let down = (curGrid.y > 0) ? (curGrid.y - 1) : curGrid.y;
@@ -208,12 +215,12 @@ cc.Class({
         for (let _x = left; _x <= right; _x++) {
             for (let _y = down; _y <= up; _y++) {
                 //这个格子的占据点
-                let owner=this._map[_x][_y].owner;
+                let owner = this._map[_x][_y].owner;
                 //目标为建筑物时，判断是否到达建筑物边缘，到达边缘即返回
                 if (target != null && owner == target)
                     return true;
                 //有人占据，又没有通过上一条判断，说明这个是障碍物，应当返回不做处理
-                if(owner!=null)
+                if (owner != null)
                     continue;
                 //这个格子的位置
                 let candidate = {
@@ -241,11 +248,66 @@ cc.Class({
         }
         return false;
     },
-    dStarfindPath(from, to) {
-        
+    addTerrainAt(terrainName, terrainPrefab, touchStartEvent) {
+        let targetLocation = touchStartEvent.getLocation();
+        for (let terrain of this.terrains) {
+            let deltaX = Math.abs(terrain.node.x - targetLocation.x);
+            let deltaY = Math.abs(terrain.node.y - targetLocation.y);
+            if (2 * deltaX >= terrain.node.width + terrainPrefab.data.width || 2 * deltaY >= terrain.node.height + terrainPrefab.data.height)
+                continue;
+            else
+                return false;
+        }
+        let newScale = this.scaleOf(terrainPrefab.data, targetLocation);
+        for (let unit of this.main.pool) {
+            let scale = this.scaleOf(unit.node);
+            if (scale.right < newScale.left ||
+                newScale.right < scale.left ||
+                scale.up < newScale.down ||
+                newScale.up < scale.down)
+                continue;
+            else
+                return false;
+        }
+        let terrainNode = cc.instantiate(terrainPrefab);
+        terrainNode.parent = this.main.scene.node;
+        this.terrains.push(terrainNode.getComponent(terrainName));
+        terrainNode.x = targetLocation.x;
+        terrainNode.y = targetLocation.y;
+
+        for (let x = newScale.left; x <= newScale.right; x++)
+            for (let y = newScale.down; y <= newScale.up; y++) {
+                this._map[x][y].owner = terrainPrefab;
+            }
+        console.log("------------------------successfully add terrain")
+        return true;
+    },
+    scaleOf(node, center) {
+        let worldLocation;
+        if (center == undefined || center == null)
+            worldLocation = node.convertToWorldSpaceAR(node);
+        else
+            worldLocation = center;
+        let left = Math.floor((worldLocation.x - node.width / 2) / this.sizeX)
+        let right = Math.floor((worldLocation.x + node.width / 2) / this.sizeX)
+        let down = Math.floor((worldLocation.y - node.height / 2) / this.sizeY)
+        let up = Math.floor((worldLocation.y + node.height / 2) / this.sizeY)
+        left = left < 0 ? 0 : left;
+        right = (right >= this._numX ? this._numX - 1 : right);
+        down = down < 0 ? 0 : down;
+        up = (up >= this._numY ? this._numY - 1 : up);
+        return {
+            left: left,
+            right: right,
+            down: down,
+            up: up
+        }
     },
     start() {
-
+        this.main = cc.find("Canvas").getComponent("Main");
     },
+    onTouchStart(event) {
+
+    }
     // update (dt) {},
 });

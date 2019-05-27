@@ -12,7 +12,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Map",
+    "_name": "brick",
     "_objFlags": 0,
     "_parent": null,
     "_children": [],
@@ -21,10 +21,13 @@
     "_components": [
       {
         "__id__": 2
+      },
+      {
+        "__id__": 3
       }
     ],
     "_prefab": {
-      "__id__": 3
+      "__id__": 4
     },
     "_opacity": 255,
     "_color": {
@@ -36,8 +39,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
+      "width": 40,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -46,8 +49,8 @@
     },
     "_position": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": 100.1,
+      "y": 81.1,
       "z": 0
     },
     "_scale": {
@@ -71,23 +74,41 @@
     "_id": ""
   },
   {
-    "__type__": "f4a33ue9XRFo6aQIVWY/xx9",
+    "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
-    "_map": null,
-    "sizeX": 20,
-    "sizeY": 20,
-    "_numX": 1,
-    "_numY": 1,
-    "prefabBrick": {
-      "__uuid__": "841bf0f7-0124-4aa0-85e2-32d825be66b5"
+    "_spriteFrame": {
+      "__uuid__": "0d758c61-8230-4dae-8653-f0d86566544f"
     },
-    "terrains": [],
-    "main": null,
+    "_type": 0,
+    "_sizeMode": 0,
+    "_fillType": 0,
+    "_fillCenter": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_state": 0,
+    "_atlas": null,
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_id": ""
+  },
+  {
+    "__type__": "e9823qH8y5LA4vqrmqSR9w+",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
     "_id": ""
   },
   {
@@ -96,9 +117,9 @@
       "__id__": 1
     },
     "asset": {
-      "__uuid__": "d0e47845-6ec2-47e4-b1b5-b06369ace795"
+      "__uuid__": "841bf0f7-0124-4aa0-85e2-32d825be66b5"
     },
-    "fileId": "d42KIE9J5KO4YWz+VPx/6Y",
+    "fileId": "18JclgBVZCRavnC5bF83np",
     "sync": false
   }
 ]
